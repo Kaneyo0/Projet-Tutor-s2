@@ -1,7 +1,17 @@
 import discord
+import RPi.GPIO as GPIO
 from discord.ext import commands
 from picamera import PiCamera
 from time import sleep
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+buzzer=6
+bouton=23
+led=5
+GPIO.setup(led,GPIO.OUT)
+GPIO.setup(bouton,GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(buzzer,GPIO.OUT)
 
 DEFAULT = "poisson.jpg"
 USER_IMG = "image.jpeg"
@@ -41,8 +51,16 @@ class Bot(commands.Bot, discord.Client):
         except:
             await msg.channel.send("Erreur : La camera n'est pas branchée")
             try:
+                for i in range(3):
+                    GPIO.output(buzzer,GPIO.HIGH)
+                    sleep(1) # Delay in seconds
+                    GPIO.output(buzzer,GPIO.LOW)
+                    sleep(1)
+            except:
+                 await msg.channel.send("Erreur : le buzzer n'est pas branché.")
+            try:
                 file = discord.File(DEFAULT, filename=DEFAULT)
-                await msg.channel.send("Neuneuil : ", file=file)
+                await msg.channel.send("Voici votre image préféré de Neuneuil par défaut : ", file=file)
             except:
                 await msg.channel.send("Erreur : la photo n'a pas pu être envoyée.")
             
