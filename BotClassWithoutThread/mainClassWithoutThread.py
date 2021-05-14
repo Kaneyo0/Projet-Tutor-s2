@@ -1,7 +1,7 @@
 from time import sleep
 from dotenv import load_dotenv
-import alarme
-import camera
+from Alarme import *
+from Camera import *
 import nasapy
 import os
 import urllib.request
@@ -9,16 +9,10 @@ import RPi.GPIO as GPIO
 import discord
 from discord.ext import commands
 from picamera import PiCamera
+from time import sleep
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-
-buzzer = 6
-bouton = 23
-led = 5
-GPIO.setup(led, GPIO.OUT)
-GPIO.setup(bouton, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(buzzer, GPIO.OUT)
 
 BestFish = "poisson.jpg"
 Image = "image.jpeg"
@@ -42,23 +36,21 @@ class Bot(commands.Bot, discord.Client):
             file = discord.File(BestFish, filename=BestFish)
             await msg.channel.send("Neuneuil : ", file=file)
         except:
-            await msg.channel.send("Erreur : la photo n'a pas pu être envoyée.")
+            await msg.channel.send("Erreur : Neuneuil est introuvable !")
 
     async def fish(self, msg):
-        #try:
-            print("test")
-            camera.Camera().prendrePhoto(PiCamera)
-            print("la camera fonctionne")
+        try:
+            Camera.prendrePhoto(self)
             file = discord.File(Image, filename=Image)
             await msg.channel.send("Image de la rasberry : ", file=file)
-        #except:
+        except:
             await msg.channel.send("Erreur : La camera n'est pas branchée")
             try:
-                alarme.Alarme().activationAlarme(buzzer)
+                Alarme.activationAlarme(self, msg)
             except:
                 await msg.channel.send("Erreur : le buzzer n'est pas branché.")
             try:
-                alarme.Alarme().activationLed(led, bouton)
+                Alarme.activationLed(self, msg)
             except:
                 await msg.channel.send("Erreur : la led n'est pas branchée.")
             try:
