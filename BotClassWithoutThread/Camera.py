@@ -5,7 +5,7 @@ import discord
 
 Image = "image.jpeg"
 
-class Camera(PiCamera):
+class Camera():
     def __init__(self):
         super(Camera, self).__init__(camera=PiCamera())
         self.camera = PiCamera()
@@ -15,10 +15,12 @@ class Camera(PiCamera):
             camera = PiCamera()
             camera.resolution = (500, 500)
             camera.rotation = 180
-            camera.start_preview(fullscreen=False, window=(1920, 1080, 640, 480))
             sleep(5)
             camera.capture(Image)
-            camera.stop_preview()
             camera.close()
         except:
-            print("Erreur : La camera n'est pas branchée")
+            camera.close()
+            #print("Erreur : La camera n'est pas branchée")
+            
+    def fermerCamera(self):
+        camera.close()

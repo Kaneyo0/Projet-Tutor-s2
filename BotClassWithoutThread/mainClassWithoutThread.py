@@ -7,6 +7,7 @@ import os
 import urllib.request
 import RPi.GPIO as GPIO
 import discord
+import sys
 from discord.ext import commands
 from picamera import PiCamera
 from time import sleep
@@ -40,25 +41,30 @@ class Bot(commands.Bot, discord.Client):
 
     async def fish(self, msg):
         try:
-            Camera.prendrePhoto(self)
+            Camera.prendrePhoto(self, PiCamera)
+            Camera.fermerCamera(self)
             file = discord.File(Image, filename=Image)
             await msg.channel.send("Image de la rasberry : ", file=file)
+            os.remove(Image)
         except:
             await msg.channel.send("Erreur : La camera n'est pas branchée")
-            try:
-                Alarme.activationAlarme(self, msg)
-            except:
-                await msg.channel.send("Erreur : le buzzer n'est pas branché.")
-            try:
-                Alarme.activationLed(self, msg)
-            except:
-                await msg.channel.send("Erreur : la led n'est pas branchée.")
+            
             try:
                 file = discord.File(BestFish, filename=BestFish)
                 await msg.channel.send("Voici votre image préféré de Neuneuil par défaut : ", file=file)
             except:
                 await msg.channel.send("Erreur : la photo n'a pas pu être envoyée.")
-
+            
+            try:
+                Alarme.activationAlarme(self, msg)
+            except:
+                await msg.channel.send("Erreur : le buzzer n'est pas branché.")
+                
+            try:
+                Alarme.activationLed(self, msg)
+            except:
+                await msg.channel.send("Erreur : la led n'est pas branchée.")
+                
     async def nasa(self, msg):
         try:
             await msg.channel.send(nasa.picture_of_the_day()["hdurl"])

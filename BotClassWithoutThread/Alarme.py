@@ -20,14 +20,11 @@ class Alarme():
         self.bouton = bouton
     
     def activationAlarme(self, msg):
-        try:
-            for i in range(3):
-                GPIO.output(buzzer,GPIO.HIGH)
-                sleep(1)
-                GPIO.output(buzzer,GPIO.LOW)
-                sleep(1)
-        except:
-            return -1
+        for i in range(3):
+            GPIO.output(buzzer,GPIO.HIGH)
+            sleep(1)
+            GPIO.output(buzzer,GPIO.LOW)
+            sleep(1)
     
     def activationLed(self, msg):
         while GPIO.input(bouton) == 1 :   
