@@ -1,7 +1,5 @@
 from time import sleep
 import RPi.GPIO as GPIO
-import discord
-from discord.ext import commands
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -22,14 +20,14 @@ class Alarme():
     def activationAlarme(self, msg):
         for i in range(3):
             GPIO.output(buzzer,GPIO.HIGH)
-            sleep(1)
+            sleep(0.8)
             GPIO.output(buzzer,GPIO.LOW)
-            sleep(1)
+            sleep(0.8)
     
     def activationLed(self, msg):
         while GPIO.input(bouton) == 1 :   
             buttonState = GPIO.input(bouton)
             GPIO.output(led, GPIO.HIGH)
-            sleep(1)
+            sleep(0.5)
             GPIO.output(led, GPIO.LOW)
-            sleep(1)
+            sleep(0.5)
